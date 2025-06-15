@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aquahuskywx</title>
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="card">
+    <h1>Hello, I’m Aqua 👋🏻</h1>
+    <h2>I'm a husky who loves weather and coffee.</h2>
+    <p>This site is under construction, but feel free to poke around.<br>
+       There may or may not be stupid secrets hidden here 😭</p>
+  </div>
+<script>
+  const card = document.querySelector('.card');
+
+  document.body.addEventListener('mousemove', (e) => {
+    const { innerWidth, innerHeight } = window;
+    const x = (e.clientX - innerWidth / 2) / 40; // adjust divisor for intensity
+    const y = (e.clientY - innerHeight / 2) / 40;
+
+    card.style.transform = `translate(${x}px, ${y}px)`;
+  });
+
+  document.body.addEventListener('mouseleave', () => {
+    card.style.transform = 'translate(0, 0)';
+  });
+</script>
+
+</body>
+</html>
