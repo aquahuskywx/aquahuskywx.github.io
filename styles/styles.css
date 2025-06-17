@@ -1,31 +1,31 @@
 @font-face {
   font-family: 'Cascadia Code';
-  src: url('fonts/CascadiaCode.woff2') format('woff2');
+  src: url('../fonts/CascadiaCode.woff2') format('woff2');
   font-feature-settings: "ss01" 1;
 }
 
 @font-face {
   font-family: 'Cascadia Code';
-  src: url('fonts/CascadiaCodeItalic.woff2') format('woff2');
+  src: url('../fonts/CascadiaCodeItalic.woff2') format('woff2');
   font-style: italic;
   font-feature-settings: "ss01" 1;
 }
 
 @font-face {
   font-family: 'Overpass';
-  src: url('fonts/overpass.woff2') format('woff2');
+  src: url('../fonts/overpass.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Overpass';
-  src: url('fonts/overpass-italic.woff2') format('woff2');
+  src: url('../fonts/overpass-italic.woff2') format('woff2');
   font-style: italic;
 }
 
 
 :root {
   --bg-color: #0e0e0e;
-  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(46, 52, 64, 0.08);
   --glass-fade: rgba(255, 255, 255, 0.1);
   --glass-blur: blur(10px);
   --text-color: #ffffff;
@@ -42,7 +42,7 @@
 
 body {
   font-family: 'Overpass', 'Noto Color Emoji', sans-serif;
-  background: var(--bg-color) url('./images/ign_EOS-SnowCappedMountaindark.jpg') no-repeat center center fixed;
+  background: var(--bg-color) url('../images/ign_EOS-SnowCappedMountaindark.jpg') no-repeat center center fixed;
   background-size: cover;
   color: var(--text-color);
   min-height: 100vh;
@@ -134,18 +134,18 @@ p {
   }
 
   body {
-    background: var(--bg-color) url('./images/ign_EOS-SnowCappedMountainlight.jpg') no-repeat center center fixed;
+    background: var(--bg-color) url('../images/ign_EOS-SnowCappedMountainlight.jpg') no-repeat center center fixed;
     background-size: cover;
   }
 
   .card {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(236, 239, 244, 0.6);
     color: var(--text-color);
   }
 
   .card:hover {
     border: 1px solid var(--accent-color);
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(236, 239, 244, 0.9);
   }
 
   h1 {
