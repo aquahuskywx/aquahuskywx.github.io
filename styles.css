@@ -22,6 +22,12 @@
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'Noto Color Emoji';
+  src: url('fonts/NotoColorEmoji') format('ttf');
+}
+
+
 
 :root {
   --bg-color: #0e0e0e;
@@ -81,7 +87,7 @@ body {
 }
 
 h1 {
-  font-family: 'Cascadia Code';
+  font-family: 'Cascadia Code', 'Noto Color Emoji';
   font-size: 2.5rem;
   font-weight: 300;
   font-style: italic;
