@@ -41,8 +41,8 @@
 }
 
 body {
-  font-family: 'Overpass', sans-serif;
-  background: var(--bg-color) url('https://i.imgur.com/tQCiI40.jpeg') no-repeat center center fixed;
+  font-family: 'Overpass', 'Noto Color Emoji', sans-serif;
+  background: var(--bg-color) url('./images/ign_EOS-SnowCappedMountaindark.jpg') no-repeat center center fixed;
   background-size: cover;
   color: var(--text-color);
   min-height: 100vh;
@@ -134,7 +134,7 @@ p {
   }
 
   body {
-    background: var(--bg-color) url('https://i.imgur.com/tQCiI40.jpeg') no-repeat center center fixed;
+    background: var(--bg-color) url('./images/ign_EOS-SnowCappedMountainlight.jpg') no-repeat center center fixed;
     background-size: cover;
   }
 
