@@ -25,13 +25,13 @@
 
 :root {
   --bg-color: #0e0e0e;
-  --glass-bg: rgba(46, 52, 64, 0.08);
-  --glass-fade: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(72, 71, 88, 0.686);
+  --glass-fade: rgba(255, 255, 255, 0.905);
   --glass-blur: blur(10px);
   --text-color: #ffffff;
-  --accent-color: #7fc8d6;
-  --accent-color2: #d0e6ea;
-  --accent-fade: rgba(127, 200, 214, 0.25);
+  --accent-color: #ff0073;
+  --accent-color2: #00c8ff;
+  --accent-fade: #ff055c40;
 }
 
 * {
@@ -42,7 +42,7 @@
 
 body {
   font-family: 'Overpass', 'Noto Color Emoji', sans-serif;
-  background: var(--bg-color) url('../images/ign_EOS-SnowCappedMountaindark.jpg') no-repeat center center fixed;
+  background: var(--bg-color) url('../images/chutipon-pattanatitinon-LxNqkGqbO80-unsplash.jpg') no-repeat center center fixed;
   background-size: cover;
   color: var(--text-color);
   min-height: 100vh;
@@ -62,13 +62,14 @@ body {
   -webkit-backdrop-filter: var(--glass-blur);
   border-radius: 10px;
   padding: 2rem 3rem;
-  max-width: 600px;
+  max-width: 800px;
+  min-height: 200px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.1s ease, border 0.1s ease;
   will-change: transform, background;
-  cursor: pointer;
+  cursor: default;
 }
 
 .card:hover {
@@ -134,7 +135,7 @@ p {
   }
 
   body {
-    background: var(--bg-color) url('../images/ign_EOS-SnowCappedMountainlight.jpg') no-repeat center center fixed;
+    background: var(--bg-color) url('../images/danielle-suijkerbuijk-18XrnWOfLyg-unsplash.jpg') no-repeat center center fixed;
     background-size: cover;
   }
 
