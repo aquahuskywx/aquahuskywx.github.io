@@ -1,4 +1,4 @@
-Copyright © 2025 Kyler Hulgan. All rights reserved.
+Copyright © 2026 Kyler Hulgan. All rights reserved.
 
 You are permitted to view this website and its contents for personal, non-commercial use only.
 
