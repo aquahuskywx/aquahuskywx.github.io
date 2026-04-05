@@ -1136,17 +1136,14 @@ setInterval(tickClock, 1000);
 ════════════════════════════════════ */
 const MC = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@dev/production/fill/svg/';
 
-function isDay() {
-  const h = new Date().getHours();
-  return h >= 6 && h < 20;
-}
+/* isDay() removed — using is_day from Open-Meteo API response instead */
 
 function mcIcon(name) {
   return `<img src="${MC}${name}.svg" alt="${name}" style="width:128px;height:128px;" />`;
 }
 
-function wmoToMeteocon(code) {
-  const day = isDay();
+function wmoToMeteocon(code, dayOverride) {
+  const day = dayOverride !== undefined ? dayOverride : true;
   const dn = day ? 'day' : 'night';
   const map = {
     0:  day ? 'clear-day'              : 'clear-night',
@@ -1198,7 +1195,7 @@ function windDir(deg) {
 
 async function fetchWeather(lat, lon) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-    `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m` +
+    `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m,is_day` +
     `&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto`;
 
   const r = await fetch(url);
@@ -1218,7 +1215,7 @@ async function fetchNWSAlerts(lat, lon) {
 function renderWeather(data) {
   const c = data.current;
   const code = c.weather_code;
-  const icon = mcIcon(wmoToMeteocon(code));
+  const icon = mcIcon(wmoToMeteocon(code, data.current.is_day === 1));
   const desc = WMO_DESC[code]  || 'Unknown';
   const temp  = Math.round(c.temperature_2m);
   const feel  = Math.round(c.apparent_temperature);
@@ -1470,7 +1467,7 @@ async function initWeather() {
       fetchNWSAlerts(lat, lon),
     ]);
     renderWeather(data);
-    applyTheme(data.current.weather_code, isDay());
+    applyTheme(data.current.weather_code, data.current.is_day === 1);
     lastRealAlerts = alerts;
     // Seed known IDs on first load — no sound for existing alerts
     alerts.forEach(a => {
@@ -1483,7 +1480,7 @@ async function initWeather() {
     setInterval(async () => {
       const fresh = await fetchWeather(lat, lon);
       renderWeather(fresh);
-      applyTheme(fresh.current.weather_code, isDay());
+      applyTheme(fresh.current.weather_code, fresh.current.is_day === 1);
       const freshAlerts = await fetchNWSAlerts(lat, lon);
       // Detect genuinely new alerts (ids we haven't seen before)
       const newIds = freshAlerts
