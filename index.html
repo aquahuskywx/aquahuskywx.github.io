@@ -993,7 +993,7 @@
     <span id="updated-at">weather updated —</span>
     <button id="demo-toggle" onclick="toggleDemoPanel()" title="Toggle alert demo panel">⚠ demo</button>
     <div class="footer-credits">
-      <a class="footer-credit" href="https://api.open-meteo.com" target="_blank" rel="noopener">
+      <a class="footer-credit" href="https://open-meteo.com" target="_blank" rel="noopener">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
         Open-Meteo
       </a>
@@ -1160,9 +1160,39 @@ function mcIcon(name) {
   return `<img src="${MC}${name}.svg" alt="${name}" style="width:128px;height:128px;" />`;
 }
 
-function wmoToMeteocon(code, dayOverride) {
+// ±30 minute window around sunrise/sunset
+const GOLDEN_WINDOW_MS = 30 * 60 * 1000;
+
+function isNearSunrise(data) {
+  try {
+    const riseStr = data.daily?.sunrise?.[0];
+    if (!riseStr) return false;
+    const rise = new Date(riseStr).getTime();
+    const now  = Date.now();
+    return Math.abs(now - rise) <= GOLDEN_WINDOW_MS;
+  } catch { return false; }
+}
+
+function isNearSunset(data) {
+  try {
+    const setStr = data.daily?.sunset?.[0];
+    if (!setStr) return false;
+    const set = new Date(setStr).getTime();
+    const now  = Date.now();
+    return Math.abs(now - set) <= GOLDEN_WINDOW_MS;
+  } catch { return false; }
+}
+
+function wmoToMeteocon(code, dayOverride, data) {
   const day = dayOverride !== undefined ? dayOverride : true;
   const dn = day ? 'day' : 'night';
+
+  // Sunrise/sunset override — only for clear/mainly clear conditions
+  if ((code === 0 || code === 1) && data) {
+    if (isNearSunrise(data)) return 'sunrise';
+    if (isNearSunset(data))  return 'sunset';
+  }
+
   const map = {
     0:  day ? 'clear-day'              : 'clear-night',
     1:  day ? 'mostly-clear-day'       : 'mostly-clear-night',
@@ -1214,6 +1244,7 @@ function windDir(deg) {
 async function fetchWeather(lat, lon) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m,is_day` +
+    `&daily=sunrise,sunset` +
     `&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto`;
 
   const r = await fetch(url);
@@ -1233,7 +1264,7 @@ async function fetchNWSAlerts(lat, lon) {
 function renderWeather(data) {
   const c = data.current;
   const code = c.weather_code;
-  const icon = mcIcon(wmoToMeteocon(code, data.current.is_day === 1));
+  const icon = mcIcon(wmoToMeteocon(code, data.current.is_day === 1, data));
   const desc = WMO_DESC[code]  || 'Unknown';
   const temp  = Math.round(c.temperature_2m);
   const feel  = Math.round(c.apparent_temperature);
@@ -1444,9 +1475,16 @@ const CONDITION_THEMES = {
   thunderstorm:   [138, 100, 255],   // purple
   hot:            [255, 120,  40],   // orange heat
   windy:          [100, 200, 180],   // teal
+  sunrise:        [255, 105, 150],   // pink
+  sunset:         [255,  90,  20],   // deep orange
 };
 
-function conditionThemeKey(code, isDay) {
+function conditionThemeKey(code, isDay, data) {
+  // Sunrise/sunset take priority over clear_day for codes 0 and 1
+  if ((code === 0 || code === 1) && data) {
+    if (isNearSunrise(data)) return 'sunrise';
+    if (isNearSunset(data))  return 'sunset';
+  }
   if ([95,96,99].includes(code)) return 'thunderstorm';
   if ([71,73,75,77,85,86].includes(code)) return 'snow';
   if ([65,82].includes(code)) return 'heavy_rain';
@@ -1462,20 +1500,22 @@ function conditionThemeKey(code, isDay) {
 // Stores the last weather code/isDay so alert theme can release back to it
 let lastWeatherCode = null;
 let lastIsDay = true;
+let lastWeatherData = null;
 
 // Minimum severity rank to override the accent color (3 = warning and above)
 const ALERT_THEME_THRESHOLD = 3;
 
-function applyTheme(code, isDay) {
+function applyTheme(code, isDay, data) {
   lastWeatherCode = code;
   lastIsDay = isDay;
+  lastWeatherData = data;
   // If a severe enough alert is active, don't override it with weather
   if (activeAlertThemeRank >= ALERT_THEME_THRESHOLD) return;
-  applyWeatherColor(code, isDay);
+  applyWeatherColor(code, isDay, data);
 }
 
-function applyWeatherColor(code, isDay) {
-  const key = conditionThemeKey(code, isDay);
+function applyWeatherColor(code, isDay, data) {
+  const key = conditionThemeKey(code, isDay, data);
   let [r, g, b] = CONDITION_THEMES[key] || CONDITION_THEMES.clear_day;
   if (window.matchMedia('(prefers-color-scheme: light)').matches) {
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
@@ -1495,7 +1535,7 @@ function applyAlertTheme(alerts) {
   if (!alerts.length) {
     activeAlertThemeRank = 0;
     // Hand control back to weather
-    if (lastWeatherCode !== null) applyWeatherColor(lastWeatherCode, lastIsDay);
+    if (lastWeatherCode !== null) applyWeatherColor(lastWeatherCode, lastIsDay, lastWeatherData);
     return;
   }
 
@@ -1517,7 +1557,7 @@ function applyAlertTheme(alerts) {
     document.documentElement.style.setProperty('--a0', topColor);
   } else {
     // Below threshold — let weather color show
-    if (lastWeatherCode !== null) applyWeatherColor(lastWeatherCode, lastIsDay);
+    if (lastWeatherCode !== null) applyWeatherColor(lastWeatherCode, lastIsDay, lastWeatherData);
   }
 }
 
@@ -1533,7 +1573,7 @@ async function initWeather() {
       fetchNWSAlerts(lat, lon),
     ]);
     renderWeather(data);
-    applyTheme(data.current.weather_code, data.current.is_day === 1);
+    applyTheme(data.current.weather_code, data.current.is_day === 1, data);
     lastRealAlerts = alerts;
     // Seed known IDs on first load — no sound for existing alerts
     alerts.forEach(a => {
@@ -1546,7 +1586,7 @@ async function initWeather() {
     setInterval(async () => {
       const fresh = await fetchWeather(lat, lon);
       renderWeather(fresh);
-      applyTheme(fresh.current.weather_code, fresh.current.is_day === 1);
+      applyTheme(fresh.current.weather_code, fresh.current.is_day === 1, fresh);
       const freshAlerts = await fetchNWSAlerts(lat, lon);
       // Detect genuinely new alerts (ids we haven't seen before)
       const newIds = freshAlerts
