@@ -425,6 +425,34 @@
       font-size: 13px;
     }
 
+    /* ─── CLOCK MOBILE ─── */
+    @media (max-width: 480px) {
+      .lcd-panel {
+        padding: 12px 10px;
+      }
+      .lcd-digit {
+        width: 34px;
+      }
+      .lcd-ghost,
+      .lcd-num {
+        font-size: 42px;
+      }
+      .lcd-colon {
+        gap: 7px;
+        padding: 0 2px 4px;
+      }
+      .lcd-colon span {
+        width: 4px; height: 4px;
+      }
+      .nixie-sub {
+        gap: 14px;
+        font-size: 9px;
+      }
+      .nixie-sub-val {
+        font-size: 11px;
+      }
+    }
+
     /* ─── WEATHER CARD ─── */
     .card-weather {
       animation: fadeUp 0.9s 0.2s ease both;
