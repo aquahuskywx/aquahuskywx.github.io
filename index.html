@@ -321,8 +321,22 @@
     }
     @media (prefers-color-scheme: light) {
       .lcd-panel {
-        background: rgba(0,0,0,0.7);
-        border-color: rgba(var(--a0),0.25);
+        background: rgba(0,0,0,0.08);
+        border-color: rgba(var(--a0),0.3);
+      }
+      .lcd-num {
+        color: rgb(var(--a0));
+        filter: brightness(0.7);
+        text-shadow: none;
+      }
+      .lcd-ghost {
+        color: rgb(var(--a0));
+        filter: brightness(0.7);
+        opacity: 0.12;
+      }
+      .lcd-colon span {
+        background: rgb(var(--a0));
+        filter: brightness(0.7);
       }
     }
 
@@ -637,6 +651,17 @@
     .alert-arrow svg { width: 14px; height: 14px; stroke: currentColor; display: block; }
     .alert-banner.clickable:hover .alert-arrow { opacity: 1; transform: translate(2px, -2px); }
     .alert-body { color: rgba(var(--ac), 0.65); font-size: 11px; }
+    @media (prefers-color-scheme: light) {
+      .alert-banner {
+        background: rgba(var(--ac), 0.12);
+        border-top-color: rgba(var(--ac), 0.25);
+        border-right-color: rgba(var(--ac), 0.15);
+        border-bottom-color: rgba(var(--ac), 0.15);
+      }
+      .alert-banner.clickable:hover { background: rgba(var(--ac), 0.2); }
+      .alert-title { filter: brightness(0.75); }
+      .alert-body { color: rgba(var(--ac), 0.8); }
+    }
 
 
     /* ─── FORECAST STRIP ─── */
@@ -720,7 +745,7 @@
       bottom: 40px; left: 50%;
       transform: translateX(-50%);
       z-index: 200;
-      background: rgba(9,11,16,0.85);
+      background: rgba(9,11,16,0.9);
       backdrop-filter: blur(20px) saturate(1.4);
       -webkit-backdrop-filter: blur(20px) saturate(1.4);
       border: 1px solid rgba(255,255,255,0.1);
@@ -732,8 +757,23 @@
       min-width: 340px;
       max-width: 520px;
       width: calc(100vw - 48px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       animation: fadeUp 0.2s ease both;
+    }
+    @media (prefers-color-scheme: light) {
+      .demo-panel {
+        background: rgba(255,255,255,0.95);
+        border-color: rgba(0,0,0,0.12);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      }
+      .demo-panel-label { color: var(--text-muted); }
+      .demo-select {
+        background: rgba(0,0,0,0.05);
+        border-color: rgba(0,0,0,0.12);
+        color: var(--text);
+      }
+      .demo-select option, .demo-select optgroup { background: #ffffff; color: #1a1d27; }
+      .demo-btn-clear:hover { border-color: rgba(0,0,0,0.2); }
     }
     .demo-panel.open { display: flex; }
     .demo-panel-header {
@@ -779,7 +819,7 @@
       letter-spacing: 0.03em;
     }
     .demo-select:focus { border-color: rgba(var(--a0),0.5); }
-    .demo-select option, .demo-select optgroup { background: #0e1117; }
+    .demo-select option, .demo-select optgroup { background: #0e1117; color: #e8eaf0; }
     .demo-btn {
       background: rgba(var(--a0),0.12);
       border: 1px solid rgba(var(--a0),0.35);
