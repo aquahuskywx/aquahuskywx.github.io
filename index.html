@@ -1082,8 +1082,14 @@
 <div id="bg-layer"></div>
 
 <!-- Hidden image preloaders — img tags load cross-origin fine -->
-<img id="bg-dark"  src="../assets/bg.jpg"      style="display:none" alt="" />
-<img id="bg-light" src="../assets/bglight.jpg"  style="display:none" alt="" />
+<!-- Dark backgrounds -->
+<img id="bg-dark-1" src="../assets/bgdark/dark1.jpg"   style="display:none" alt="" />
+<img id="bg-dark-2" src="../assets/bgdark/dark2.jpg"   style="display:none" alt="" />
+<img id="bg-dark-3" src="../assets/bgdark/dark3.jpg"   style="display:none" alt="" />
+<!-- Light backgrounds -->
+<img id="bg-light-1" src="../assets/bglight/light1.jpg" style="display:none" alt="" />
+<img id="bg-light-2" src="../assets/bglight/light2.jpg" style="display:none" alt="" />
+<img id="bg-light-3" src="../assets/bglight/light3.jpg" style="display:none" alt="" />
 
 <!-- NAV -->
 <nav class="nav">
@@ -1985,10 +1991,18 @@ async function initWeather() {
 /* ════════════════════════════════════
    BACKGROUND IMAGE LOADER
 ════════════════════════════════════ */
+const BG_COUNT = 3;
+
+function randomBgId(prefix) {
+  const n = Math.floor(Math.random() * BG_COUNT) + 1;
+  return `${prefix}-${n}`;
+}
+
 function initBackground() {
   const layer = document.getElementById('bg-layer');
   const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-  const img = document.getElementById(isLight ? 'bg-light' : 'bg-dark');
+  const id = randomBgId(isLight ? 'bg-light' : 'bg-dark');
+  const img = document.getElementById(id);
 
   function applyBg(imgEl) {
     layer.style.backgroundImage = `url('${imgEl.src}')`;
@@ -1999,8 +2013,10 @@ function initBackground() {
   else img.addEventListener('load', () => applyBg(img));
 
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
-    const next = document.getElementById(e.matches ? 'bg-light' : 'bg-dark');
-    applyBg(next);
+    const nextId = randomBgId(e.matches ? 'bg-light' : 'bg-dark');
+    const next = document.getElementById(nextId);
+    if (next.complete) applyBg(next);
+    else next.addEventListener('load', () => applyBg(next));
   });
 }
 
