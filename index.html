@@ -897,6 +897,51 @@
     @media (prefers-color-scheme: light) {
       footer { background: rgba(240,242,247,0.75); border-top-color: rgba(0,0,0,0.08); }
     }
+    #credits-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s;
+      align-items: center;
+      gap: 4px;
+    }
+    #credits-toggle:hover { color: var(--accent); }
+    #credits-toggle svg { transition: transform 0.2s; }
+    #credits-toggle.open svg { transform: rotate(180deg); }
+    @media (max-width: 640px) {
+      #credits-toggle { display: flex; }
+      .footer-credits {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        background: rgba(9,11,16,0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 10px 14px;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 6px;
+        white-space: nowrap;
+      }
+      .footer-credits.open { display: flex; }
+      .footer-sep { display: none; }
+      footer { position: relative; flex-wrap: nowrap; }
+    }
+    @media (max-width: 640px) and (prefers-color-scheme: light) {
+      .footer-credits {
+        background: rgba(240,242,247,0.98);
+        border-color: rgba(0,0,0,0.1);
+      }
+    }
 
     /* ─── ALERT DEMO PANEL ─── */
     .demo-panel {
@@ -1230,7 +1275,11 @@
       <span id="updated-at">weather updated —</span>
     </div>
     <button id="demo-toggle" onclick="toggleDemoPanel()" title="Toggle alert demo panel">⚠ demo</button>
-    <div class="footer-credits">
+    <button id="credits-toggle" onclick="toggleCredits()" title="Sources">
+      sources
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+    <div class="footer-credits" id="footer-credits">
       <a class="footer-credit" href="https://open-meteo.com" target="_blank" rel="noopener">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
         Open-Meteo
@@ -1238,7 +1287,7 @@
       <span class="footer-sep">·</span>
       <a class="footer-credit" href="https://www.weather.gov" target="_blank" rel="noopener">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        NWS Alerts
+        <span class="credit-full">NWS Alerts</span><span class="credit-short" style="display:none">NWS</span>
       </a>
       <span class="footer-sep">·</span>
       <a class="footer-credit" href="https://bas.dev/work/meteocons" target="_blank" rel="noopener">
@@ -1248,7 +1297,7 @@
       <span class="footer-sep">·</span>
       <a class="footer-credit" href="https://mesonet.agron.iastate.edu" target="_blank" rel="noopener">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14.5 14.5 0 0 0 0 18M12 3a14.5 14.5 0 0 1 0 18"/></svg>
-        Iowa Environmental Mesonet
+        <span class="credit-full">Iowa Environmental Mesonet</span><span class="credit-short" style="display:none">IEM</span>
       </a>
     </div>
 </footer>
@@ -1711,6 +1760,19 @@ function renderAlerts(alerts, playSound = false) {
   lucide.createIcons({ scope: container });
   applyAlertTheme(sorted);
   if (playSound) playAlertTone();
+}
+
+function toggleCredits() {
+  const btn = document.getElementById('credits-toggle');
+  const credits = document.getElementById('footer-credits');
+  btn.classList.toggle('open');
+  credits.classList.toggle('open');
+}
+
+// Show shortened labels on mobile
+if (window.innerWidth <= 640) {
+  document.querySelectorAll('.credit-full').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.credit-short').forEach(el => el.style.display = '');
 }
 
 async function forceRefresh() {
